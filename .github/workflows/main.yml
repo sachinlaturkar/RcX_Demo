@@ -37,17 +37,11 @@ jobs:
       - name: Configure gcloud settings
         run: gcloud config set project ${{ secrets.GCP_PROJECT_ID }}
 
-      - name: Build Docker image
+      - name: Build and Push Docker Image
         run: |
-          echo "Building Docker image"
-          docker build --no-cache -t docker.io/${{ secrets.DOCKER_USERNAME }}/samplespringboot:${{ github.sha }} .
-      
-      - name: Push Docker image
-        run: |
-          echo "Pushing Docker image"
-          docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin <<< ${{ secrets.DOCKER_PASSWORD }}
-          docker push docker.io/${{ secrets.DOCKER_USERNAME }}/samplespringboot:${{ github.sha }}
-
+          docker build -t us-east4-docker.pkg.dev/zb-poc/testgcr/${{ secrets.GCP_PROJECT_ID }}/sample-app:latest .
+          docker push us-east4-docker.pkg.dev/zb-poc/testgcr/${{ secrets.GCP_PROJECT_ID }}/sample-app:latest
+        
       - name: Install Kubernetes tools
         run: |
           echo "Installing kubectl"
